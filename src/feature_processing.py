@@ -4,6 +4,31 @@ import category_encoders as ce
 from sklearn.preprocessing import LabelEncoder
 import joblib
 from dirty_cat import SimilarityEncoder, TargetEncoder, MinHashEncoder, GapEncoder
+import numpy as np
+
+
+def chose_feature_encoding(df,feature,name_encoder):
+    if name_encoder == 'label' :
+        encoder = LabelEncoder()
+        df[feature] = encoder.fit_transform(df[feature])
+
+    elif name_encoder == 'basen' :
+        encoder = ce.BaseNEncoder(cols=[feature],return_df=True, base=5)
+        df = encoder.fit_transform(df)
+
+    elif name_encoder == 'similarity' :
+        encoder = SimilarityEncoder(similarity='ngram')
+        df[feature] = encoder.fit_transform(np.array(df[feature]).reshape(-1, 1))
+
+    elif name_encoder == 'minhash':
+        encoder = MinHashEncoder(n_components=100)
+        df[feature] = encoder.fit_transform(np.array(df[feature]).reshape(-1, 1))
+
+    elif name_encoder == 'gap':
+        encoder = GapEncoder(n_components=100)
+        df[feature] = encoder.fit_transform(np.array(df[feature]).reshape(-1, 1))
+
+    return df
 
 
 def chose_encoder(df, name,mode):
@@ -20,7 +45,7 @@ def chose_encoder(df, name,mode):
         for c in ['Course Name', 'Course Skill', 'Specialization', 'Training Provider', 'Main Domain', 'Course Code']:
             encoders[c] = SimilarityEncoder(similarity='ngram')
             if mode == 'train':
-                df[c] = encoders[c].fit_transform(df[c])
+                df[c] = encoders[c].fit_transform(np.array(df[c]).reshape(-1,1))
             else:
                 encoders = joblib.load(config.MODELS_PATH + 'feature_encoders.pkl')
                 df[c] = encoders[c].transform(df[c])
@@ -31,7 +56,7 @@ def chose_encoder(df, name,mode):
         for c in ['Course Name', 'Course Skill', 'Specialization', 'Training Provider', 'Main Domain', 'Course Code']:
             encoders[c] = MinHashEncoder(n_components=100)
             if mode == 'train':
-                df[c] = encoders[c].fit_transform(df[c])
+                df[c] = encoders[c].fit_transform(np.array(df[c]).reshape(-1, 1))
             else:
                 encoders = joblib.load(config.MODELS_PATH + 'feature_encoders.pkl')
                 df[c] = encoders[c].transform(df[c])
@@ -42,18 +67,7 @@ def chose_encoder(df, name,mode):
         for c in ['Course Name', 'Course Skill', 'Specialization', 'Training Provider', 'Main Domain', 'Course Code']:
             encoders[c] = GapEncoder(n_components=100)
             if mode == 'train':
-                df[c] = encoders[c].fit_transform(df[c])
-            else:
-                encoders = joblib.load(config.MODELS_PATH + 'feature_encoders.pkl')
-                df[c] = encoders[c].transform(df[c])
-
-    # TargetEncoder
-    elif name == 'gap':
-        encoders = {}
-        for c in ['Course Name', 'Course Skill', 'Specialization', 'Training Provider', 'Main Domain','Course Code']:
-            encoders[c] = TargetEncoder(handle_unknown='ignore')
-            if mode == 'train':
-                df[c] = encoders[c].fit_transform(df[c])
+                df[c] = encoders[c].fit_transform(np.array(df[c]).reshape(-1, 1))
             else:
                 encoders = joblib.load(config.MODELS_PATH + 'feature_encoders.pkl')
                 df[c] = encoders[c].transform(df[c])
@@ -118,17 +132,33 @@ def feature_process(data1, data2, main_domains,mode,encoder_name):
 
 
     # LabelEncoder
-    labelencoders = {}
-    for c in ['Course Type', 'Course Status', 'Country/Territory', 'Priority', 'Managed Type',
-              'Delivery Tool Platform', 'Display Course Type']:
-        labelencoders[c] = LabelEncoder()
-        if mode == 'train' :
-            df4[c] = labelencoders[c].fit_transform(df4[c])
-        else :
-            labelencoders = joblib.load(config.MODELS_PATH+'feature_encoders.pkl')
-            df4[c] = labelencoders[c].transform(df4[c])
+    #labelencoders = {}
+    #for c in ['Course Type', 'Course Status', 'Country/Territory', 'Priority', 'Managed Type',
+    #          'Delivery Tool Platform', 'Display Course Type']:
+    #    labelencoders[c] = LabelEncoder()
+    #    if mode == 'train' :
+    #        df4[c] = labelencoders[c].fit_transform(df4[c])
+    #    else :
+    #        labelencoders = joblib.load(config.MODELS_PATH+'feature_encoders.pkl')
+    #        df4[c] = labelencoders[c].transform(df4[c])
 
-    df4 = chose_encoder(df4, encoder_name, mode)
+
+    df4 = chose_feature_encoding(df4,'Course Type','label')
+    df4 = chose_feature_encoding(df4, 'Course Status', 'label')
+    df4 = chose_feature_encoding(df4, 'Country/Territory', 'label')
+    df4 = chose_feature_encoding(df4, 'Priority', 'label')
+    df4 = chose_feature_encoding(df4, 'Managed Type', 'label')
+    df4 = chose_feature_encoding(df4, 'Delivery Tool Platform', 'label')
+    df4 = chose_feature_encoding(df4, 'Display Course Type', 'label')
+    df4 = chose_feature_encoding(df4,'Course Name','basen')
+    df4 = chose_feature_encoding(df4, 'Course Skill', 'basen')
+    df4 = chose_feature_encoding(df4, 'Specialization', 'basen')
+    df4 = chose_feature_encoding(df4, 'Training Provider', 'basen')
+    df4 = chose_feature_encoding(df4, 'Main Domain', 'basen')
+    df4 = chose_feature_encoding(df4, 'Course Code', 'basen')
+
+
+    #df4 = chose_encoder(df4, encoder_name, mode)
     # BaseNEncoder
     #encoder = ce.BaseNEncoder(
         #cols=['Course Name', 'Course Skill', 'Specialization', 'Training Provider', 'Main Domain', 'Course Code'],
@@ -137,8 +167,8 @@ def feature_process(data1, data2, main_domains,mode,encoder_name):
 
     #df4.to_csv('/Users/louise.hubert/PycharmProjects/training_predictions/data/encoded_data.csv', index=False)
 
-    if mode == 'train':
-        joblib.dump(labelencoders, '/Users/louise.hubert/PycharmProjects/training_predictions/models' + 'feature_encoders.pkl')
+    #if mode == 'train':
+    #    joblib.dump(labelencoders, '/Users/louise.hubert/PycharmProjects/training_predictions/models' + 'feature_encoders.pkl')
 
     test = df4[df4['Year'] == 2021]
     train = df4[df4['Year'] < 2021]
@@ -150,4 +180,4 @@ def feature_process(data1, data2, main_domains,mode,encoder_name):
 data1 = config.FRANCE_DATA
 data2 = config.BEN_MAU_DATA
 main_domains = config.MAIN_DOMAINS
-feature_process('/Users/louise.hubert/PycharmProjects/training_predictions/data/training_list_France.xlsx', '/Users/louise.hubert/PycharmProjects/training_predictions/data/training_list_Benelux_Maurice.xlsx', '/Users/louise.hubert/PycharmProjects/training_predictions/data/main_domains.xlsx','train','similarity')
+feature_process('/Users/louise.hubert/PycharmProjects/training_predictions/data/training_list_France.xlsx', '/Users/louise.hubert/PycharmProjects/training_predictions/data/training_list_Benelux_Maurice.xlsx', '/Users/louise.hubert/PycharmProjects/training_predictions/data/main_domains.xlsx','train','minhash')
