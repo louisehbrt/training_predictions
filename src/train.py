@@ -1,4 +1,5 @@
 from src import config
+from src import feature_processing
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.linear_model import Ridge
@@ -20,6 +21,35 @@ from sklearn.metrics import confusion_matrix
 from sklearn.metrics import f1_score
 import pandas as pd
 
+
+def encode(df):
+    columns = ['Course Code', 'Course Name', 'Course Type', 'Course Status', 'Country/Territory', 'Course Skill',
+               'Main Domain', 'Priority', 'Training Provider', 'Managed Type', 'Delivery Tool Platform',
+               'Display Course Type', 'Specialization']
+    n = len(columns)
+    for i in range(n):
+        print(columns[i])
+        df = feature_processing.chose_feature_encoding(df, columns[i],'label')
+    #df = feature_processing.chose_feature_encoding(df, 'Course Status', 'label')
+    #df = feature_processing.chose_feature_encoding(df, 'Country/Territory', 'label')
+    #df = feature_processing.chose_feature_encoding(df, 'Priority', 'label')
+    #df = feature_processing.chose_feature_encoding(df, 'Managed Type', 'label')
+    #df = feature_processing.chose_feature_encoding(df, 'Delivery Tool Platform', 'label')
+    #df = feature_processing.chose_feature_encoding(df, 'Display Course Type', 'label')
+    #df = feature_processing.chose_feature_encoding(df, 'Course Name', 'basen')
+    #df = feature_processing.chose_feature_encoding(df, 'Course Skill', 'basen')
+    #df = feature_processing.chose_feature_encoding(df, 'Specialization', 'basen')
+    #df = feature_processing.chose_feature_encoding(df, 'Training Provider', 'basen')
+    #df = feature_processing.chose_feature_encoding(df, 'Main Domain', 'basen')
+    #df = feature_processing.chose_feature_encoding(df, 'Course Code', 'basen')
+
+    test = df[df['Year'] == 2021]
+    train = df[df['Year'] < 2021]
+
+    test.to_csv('/Users/louise.hubert/PycharmProjects/training_predictions/data/test_data.csv', index=False)
+    train.to_csv('/Users/louise.hubert/PycharmProjects/training_predictions/data/train_data.csv', index=False)
+
+    return df, train, test
 
 def train_with_2021_test(data_train,data_test):
 
@@ -113,5 +143,10 @@ def train_split_function(data):
 
 
 
-train_with_2021_test('/Users/louise.hubert/PycharmProjects/training_predictions/data/train_data.csv','/Users/louise.hubert/PycharmProjects/training_predictions/data/test_data.csv')
-train_split_function('/Users/louise.hubert/PycharmProjects/training_predictions/data/encoded_data.csv')
+DF, TRAIN, TEST = encode('/Users/louise.hubert/PycharmProjects/training_predictions/data/processed_data.csv')
+
+
+train_split_function(DF)
+train_with_2021_test(TRAIN,TEST)
+#train_with_2021_test('/Users/louise.hubert/PycharmProjects/training_predictions/data/train_data.csv','/Users/louise.hubert/PycharmProjects/training_predictions/data/test_data.csv')
+#train_split_function('/Users/louise.hubert/PycharmProjects/training_predictions/data/encoded_data.csv')
