@@ -1,4 +1,5 @@
 from src import config
+from src import feature_processing
 import numpy as np
 import pandas as pd
 import joblib
@@ -97,3 +98,5 @@ def encode(df):
     train.to_csv('/Users/louise.hubert/PycharmProjects/training_predictions/data/train_data.csv', index=False)
 
     return df, train, test
+
+print(encode(feature_processing.feature_process('/Users/louise.hubert/PycharmProjects/training_predictions/data/training_list_France.xlsx', '/Users/louise.hubert/PycharmProjects/training_predictions/data/training_list_Benelux_Maurice.xlsx', '/Users/louise.hubert/PycharmProjects/training_predictions/data/main_domains.xlsx','train','minhash')))

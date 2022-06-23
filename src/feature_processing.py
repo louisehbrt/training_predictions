@@ -89,3 +89,4 @@ data1 = config.FRANCE_DATA
 data2 = config.BEN_MAU_DATA
 main_domains = config.MAIN_DOMAINS
 feature_process('/Users/louise.hubert/PycharmProjects/training_predictions/data/training_list_France.xlsx', '/Users/louise.hubert/PycharmProjects/training_predictions/data/training_list_Benelux_Maurice.xlsx', '/Users/louise.hubert/PycharmProjects/training_predictions/data/main_domains.xlsx','train','minhash')
+
