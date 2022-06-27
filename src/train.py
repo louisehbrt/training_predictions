@@ -117,7 +117,9 @@ def train_split_function(data):
 def keep_best(method, eval, X_train, X_test, y_train, y_test):
 
     if method == 'regression':
+
         if eval == 'r2':
+
             model = LinearRegression()
             model.fit(X_train, y_train)
             y_predict = model.predict(X_test)
@@ -132,11 +134,11 @@ def keep_best(method, eval, X_train, X_test, y_train, y_test):
             }
 
             for name, function in MODELS_REGRESSION.items():
-
                 model = function
                 model.fit(X_train, y_train)
                 y_predict = model.predict(X_test)
                 r2_temp = r2_score(y_test, y_predict)
+
                 if r2_best < r2_temp :
                     r2_best = r2_temp
                     name_best = name
@@ -144,6 +146,7 @@ def keep_best(method, eval, X_train, X_test, y_train, y_test):
             return name_best, r2_best
 
         elif eval == 'mse':
+
             model = LinearRegression()
             model.fit(X_train, y_train)
             y_predict = model.predict(X_test)
@@ -158,55 +161,118 @@ def keep_best(method, eval, X_train, X_test, y_train, y_test):
         }
 
         for name, function in MODELS_REGRESSION.items():
-
             model = function
             model.fit(X_train, y_train)
             y_predict = model.predict(X_test)
             mse_temp = mean_squared_error(y_test, y_predict)
+
             if mse_best < mse_temp:
                 mse_best = mse_temp
                 name_best = name
 
             return (name_best, mse_best)
 
+    if method == 'classification':
+
+        if eval == 'precision':
+
+            model = DecisionTreeClassifier(random_state=7)
+            model.fit(X_train, y_train)
+            precision_best = model.score(X_test, y_test) * 100
+            name_best = 'decisiontree'
+
+            MODELS_CLASSIFICATION = {
+                # 'logisticregration': LogisticRegression(random_state=7, max_iter=10000),
+                'randomforestclassifier': RandomForestClassifier(random_state=7),
+                'svc': SVC(random_state=7),
+                'naivebaysianclass': GaussianNB(),
+                'adaboost': AdaBoostClassifier(base_estimator=RandomForestClassifier(), random_state=7),
+                'gradientboost': GradientBoostingClassifier(random_state=7),
+                'bagging': BaggingClassifier(base_estimator=RandomForestClassifier(), random_state=7),
+            }
+
+            for name, function in MODELS_CLASSIFICATION.items():
+                model = function
+                model.fit(X_train, y_train)
+                precision_temp = model.score(X_test, y_test) * 100
+
+                if precision_best < precision_temp:
+                    precision_best = precision_temp
+                    name_best = name
+
+            return name_best, precision_best
+
+        if eval == 'f1':
+
+            model = DecisionTreeClassifier(random_state=7)
+            model.fit(X_train, y_train)
+            y_predict = model.predict(X_test)
+            f1_best = f1_score(y_test, y_predict, average='weighted')
+            name_best = 'decisiontree'
+
+            MODELS_CLASSIFICATION = {
+                # 'logisticregration': LogisticRegression(random_state=7, max_iter=10000),
+                'randomforestclassifier': RandomForestClassifier(random_state=7),
+                'svc': SVC(random_state=7),
+                'naivebaysianclass': GaussianNB(),
+                'adaboost': AdaBoostClassifier(base_estimator=RandomForestClassifier(), random_state=7),
+                'gradientboost': GradientBoostingClassifier(random_state=7),
+                'bagging': BaggingClassifier(base_estimator=RandomForestClassifier(), random_state=7),
+            }
+
+            for name, function in MODELS_CLASSIFICATION.items():
+                model = function
+                model.fit(X_train, y_train)
+                y_predict = model.predict(X_test)
+                f1_temp = f1_score(y_test, y_predict, average='weighted')
+
+                if f1_best < f1_temp:
+                    f1_best = f1_temp
+                    name_best = name
+
+            return name_best, f1_best
+
+
 
 
 def compare_encoding(data):
     df = pd.read_csv(data)
 
-    encoders = ['label', 'basen', 'similarity', 'minhash', 'gap']
+    encoders = ['label', 'onehot', 'basen', 'similarity', 'minhash', 'gap']
 
     # On initialise tous les encodages avec label encoder
     columns = ['Course Code', 'Course Name', 'Course Type', 'Course Status', 'Country/Territory', 'Course Skill',
                'Main Domain', 'Priority', 'Training Provider', 'Managed Type', 'Delivery Tool Platform',
                'Display Course Type', 'Specialization']
 
-    for index_col, col in enumerate(columns):
-        for index_enc, enc in enumerate(encoders):
-            df = feature_encoding.chose_feature_encoding(df, col, enc)
 
 
-    test = df[df['Year'] == 2021]
-    train = df[df['Year'] < 2021]
+    for index_enc, enc in enumerate(encoders):
+        df_enc = df.copy()
+        for index_col, col in enumerate(columns):
+            df_enc = feature_encoding.chose_feature_encoding(df_enc, col, enc)
 
-    test.to_csv('/Users/louise.hubert/PycharmProjects/training_predictions/data/test_data.csv', index=False)
-    train.to_csv('/Users/louise.hubert/PycharmProjects/training_predictions/data/train_data.csv', index=False)
+        test = df_enc[df_enc['Year'] == 2021]
+        train = df_enc[df_enc['Year'] < 2021]
 
-    X_train = train.drop(columns=['Participants'])
-    y_train = train["Participants"]
+        test.to_csv('/Users/louise.hubert/PycharmProjects/training_predictions/data/test_data.csv', index=False)
+        train.to_csv('/Users/louise.hubert/PycharmProjects/training_predictions/data/train_data.csv', index=False)
 
-    X_test = test.drop(columns=['Participants'])
-    y_test = test["Participants"]
+        X_train = train.drop(columns=['Participants'])
+        y_train = train["Participants"]
 
+        X_test = test.drop(columns=['Participants'])
+        y_test = test["Participants"]
 
-    name, score = keep_best('regression', 'r2', X_train, X_test, y_train, y_test)
+        name, score = keep_best('classification', 'f1', X_train, X_test, y_train, y_test)
+
+        print(enc, name, score)
 
 
     return (name, score)
 
 NAME, SCORE = compare_encoding('/Users/louise.hubert/PycharmProjects/training_predictions/data/processed_data.csv')
 
-print(NAME, SCORE)
 
 #train_split_function(DF)
 #train_with_2021_test(TRAIN,TEST)

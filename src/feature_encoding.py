@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 import joblib
 import category_encoders as ce
-from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import LabelEncoder, OneHotEncoder
 from dirty_cat import SimilarityEncoder, MinHashEncoder, GapEncoder
 
 
@@ -12,6 +12,9 @@ def chose_feature_encoding(df, feature, name_encoder):
     if name_encoder == 'label':
         encoder = LabelEncoder()
         df[feature] = encoder.fit_transform(df[feature])
+
+    if name_encoder == 'onehot':
+        df = pd.get_dummies(df)
 
     elif name_encoder == 'basen':
         encoder = ce.BaseNEncoder(cols=[feature], return_df=True, base=5)
