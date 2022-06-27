@@ -49,8 +49,6 @@ def feature_process(data1, data2, main_domains, mode, encoder_name):
     domains = domains.drop(columns=['Course', 'Training Domain'])  # on retire les colonnes inutiles
     df4 = df3.merge(domains, on='Course Code', how='inner')  # on ajoute la nouvelle variable au dataframe
 
-    df4['Main Domain'].isna().sum()  # on vérifie les valeurs manquantes
-
     # df_2021 = df4[df4['Year'] == 2021]
     # course_code_2021 = df_2021['Course Code']
 

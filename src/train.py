@@ -114,16 +114,77 @@ def train_split_function(data):
         print(name, ' precision : ', model.score(X_test, y_test)*100, 'and f1-score : ', f1_score(y_test, y_predict, average='weighted'))
 
 
+def keep_best(method, eval, X_train, X_test, y_train, y_test):
 
-def compare_encoding(df):
-    print(df)
+    if method == 'regression':
+        if eval == 'r2':
+            model = LinearRegression()
+            model.fit(X_train, y_train)
+            y_predict = model.predict(X_test)
+            r2_best = r2_score(y_test, y_predict)
+            name_best = 'linearregression'
+
+            MODELS_REGRESSION = {
+                'ridgeregression': Ridge(10),
+                'lassoregression': Lasso(5.),
+                'randomforestregressor': RandomForestRegressor(n_estimators=100),
+                'svr': SVR(kernel='rbf')
+            }
+
+            for name, function in MODELS_REGRESSION.items():
+
+                model = function
+                model.fit(X_train, y_train)
+                y_predict = model.predict(X_test)
+                r2_temp = r2_score(y_test, y_predict)
+                if r2_best < r2_temp :
+                    r2_best = r2_temp
+                    name_best = name
+
+            return name_best, r2_best
+
+        elif eval == 'mse':
+            model = LinearRegression()
+            model.fit(X_train, y_train)
+            y_predict = model.predict(X_test)
+            mse_best = mean_squared_error(y_test, y_predict)
+            name_best = 'linearregression'
+
+        MODELS_REGRESSION = {
+            'ridgeregression': Ridge(10),
+            'lassoregression': Lasso(5.),
+            'randomforestregressor': RandomForestRegressor(n_estimators=100),
+            'svr': SVR(kernel='rbf')
+        }
+
+        for name, function in MODELS_REGRESSION.items():
+
+            model = function
+            model.fit(X_train, y_train)
+            y_predict = model.predict(X_test)
+            mse_temp = mean_squared_error(y_test, y_predict)
+            if mse_best < mse_temp:
+                mse_best = mse_temp
+                name_best = name
+
+            return (name_best, mse_best)
+
+
+
+def compare_encoding(data):
+    df = pd.read_csv(data)
+
+    encoders = ['label', 'basen', 'similarity', 'minhash', 'gap']
+
     # On initialise tous les encodages avec label encoder
     columns = ['Course Code', 'Course Name', 'Course Type', 'Course Status', 'Country/Territory', 'Course Skill',
                'Main Domain', 'Priority', 'Training Provider', 'Managed Type', 'Delivery Tool Platform',
                'Display Course Type', 'Specialization']
-    for index, col in enumerate(columns):
-        print(index, col)
-        #df = feature_encoding.chose_feature_encoding(df, 'Course Code','label')
+
+    for index_col, col in enumerate(columns):
+        for index_enc, enc in enumerate(encoders):
+            df = feature_encoding.chose_feature_encoding(df, col, enc)
+
 
     test = df[df['Year'] == 2021]
     train = df[df['Year'] < 2021]
@@ -131,12 +192,23 @@ def compare_encoding(df):
     test.to_csv('/Users/louise.hubert/PycharmProjects/training_predictions/data/test_data.csv', index=False)
     train.to_csv('/Users/louise.hubert/PycharmProjects/training_predictions/data/train_data.csv', index=False)
 
-    return df, train, test
+    X_train = train.drop(columns=['Participants'])
+    y_train = train["Participants"]
 
-DF, TRAIN, TEST = compare_encoding('/Users/louise.hubert/PycharmProjects/training_predictions/data/processed_data.csv')
+    X_test = test.drop(columns=['Participants'])
+    y_test = test["Participants"]
 
 
-train_split_function(DF)
-train_with_2021_test(TRAIN,TEST)
+    name, score = keep_best('regression', 'r2', X_train, X_test, y_train, y_test)
+
+
+    return (name, score)
+
+NAME, SCORE = compare_encoding('/Users/louise.hubert/PycharmProjects/training_predictions/data/processed_data.csv')
+
+print(NAME, SCORE)
+
+#train_split_function(DF)
+#train_with_2021_test(TRAIN,TEST)
 #train_with_2021_test('/Users/louise.hubert/PycharmProjects/training_predictions/data/train_data.csv','/Users/louise.hubert/PycharmProjects/training_predictions/data/test_data.csv')
 #train_split_function('/Users/louise.hubert/PycharmProjects/training_predictions/data/encoded_data.csv')
