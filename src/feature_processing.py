@@ -1,5 +1,15 @@
 import pandas as pd
 from src import config
+from plotnine import *
+
+def number_modalities(df):
+    columns = []
+    length = []
+    for index_col, col in enumerate(df):
+        columns.append(col)
+        length.append(len(df[col].value_counts()))
+    res = pd.DataFrame(list(zip(columns, length)),columns=['Column', 'Length'])
+    return res
 
 
 def feature_process(data1, data2, main_domains, mode, encoder_name):
@@ -53,6 +63,13 @@ def feature_process(data1, data2, main_domains, mode, encoder_name):
     # course_code_2021 = df_2021['Course Code']
 
     df4.to_csv('/Users/louise.hubert/PycharmProjects/training_predictions/data/processed_data.csv', index=False)
+
+    part = df4[['Year']].join(df4[['Participants']])
+    part = part.join(df4[['Main Domain']])
+
+    p = ggplot(part, aes(x='Year', fill = 'Main Domain', binwidth=24)) + geom_histogram()
+    #print(p)
+    print(number_modalities(df4).sort_values(by='Length'))
 
     return df4
 

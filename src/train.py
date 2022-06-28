@@ -23,6 +23,7 @@ import pandas as pd
 
 
 
+
 def train_with_2021_test(data_train,data_test):
 
     df_train = pd.read_csv(data_train)
@@ -238,14 +239,18 @@ def keep_best(method, eval, X_train, X_test, y_train, y_test):
 def compare_encoding(data):
     df = pd.read_csv(data)
 
+    # Les encodeurs utilisés
     encoders = ['label', 'onehot', 'basen', 'similarity', 'minhash', 'gap']
 
-    # On initialise tous les encodages avec label encoder
+    # Les colonnes à encoder
     columns = ['Course Code', 'Course Name', 'Course Type', 'Course Status', 'Country/Territory', 'Course Skill',
                'Main Domain', 'Priority', 'Training Provider', 'Managed Type', 'Delivery Tool Platform',
                'Display Course Type', 'Specialization']
 
 
+    # On initialise une liste vide pour récupérer le nom du modèle et une autre pour le score
+    models = []
+    scores = []
 
     for index_enc, enc in enumerate(encoders):
         df_enc = df.copy()
@@ -264,11 +269,15 @@ def compare_encoding(data):
         X_test = test.drop(columns=['Participants'])
         y_test = test["Participants"]
 
-        name, score = keep_best('classification', 'f1', X_train, X_test, y_train, y_test)
+        name, score = keep_best('regression', 'r2', X_train, X_test, y_train, y_test)
+        models.append(name)
+        scores.append(score)
 
-        print(enc, name, score)
+        #print(enc, name, score)
 
+    #df_result = pd.DataFrame(list(encoders,name,score), columns = ['Encoder','Model_Name','Score'])
 
+    #print(df_result)
     return (name, score)
 
 NAME, SCORE = compare_encoding('/Users/louise.hubert/PycharmProjects/training_predictions/data/processed_data.csv')
