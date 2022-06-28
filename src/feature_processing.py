@@ -1,5 +1,8 @@
 import pandas as pd
 from src import config
+from plotnine import *
+
+
 
 
 def feature_process(data1, data2, main_domains, mode, encoder_name):
@@ -53,6 +56,10 @@ def feature_process(data1, data2, main_domains, mode, encoder_name):
     # course_code_2021 = df_2021['Course Code']
 
     df4.to_csv('/Users/louise.hubert/PycharmProjects/training_predictions/data/processed_data.csv', index=False)
+
+    ggplot(df4, aes(x='Year')) + \
+    geom_bar(stat='Participants')
+
 
     return df4
 
