@@ -69,35 +69,25 @@ def feature_process(data1, data2, main_domains, mode, encoder_name):
 
     p = ggplot(part, aes(x='Year', fill = 'Main Domain', binwidth=24)) + geom_histogram()
     #print(p)
-    print(number_modalities(df4).sort_values(by='Length'))
+    #NM = number_modalities(df4.drop(columns=['Estimated Other', 'Year', 'Estimated Transportation', 'Estimated Housing', 'Course Hours', 'Participants', 'Estimated Tuition']))
+    #print(NM.sort_values(by='Length'))
+    #print(NM.describe())
+
+    #Length
+#count    13.000000
+#mean    310.923077
+#std     554.688420
+#min       2.000000
+#25%       2.000000
+#50%     10.000000
+#75%     289.000000
+#max    1535.000000
+
+    #On trie les variables par nombre de modalités :
+        # • 2-11 (8) : Course Type, Priority, Managed Type, Display Course Type, Course Status, Country/Territory, Delivery Tool Plateform, Main Domain
+        # • 170-1535 (5) : Specialization, Training Provider, Course Skill, Course Name, Course Code
 
     return df4
-
-    # LabelEncoder
-    #labelencoders = {}
-    #for c in ['Course Type', 'Course Status', 'Country/Territory', 'Priority', 'Managed Type',
-    #          'Delivery Tool Platform', 'Display Course Type']:
-    #    labelencoders[c] = LabelEncoder()
-    #    if mode == 'train' :
-    #        df4[c] = labelencoders[c].fit_transform(df4[c])
-    #    else :
-    #        labelencoders = joblib.load(config.MODELS_PATH+'feature_encoders.pkl')
-    #        df4[c] = labelencoders[c].transform(df4[c])
-
-
-
-    #df4 = chose_encoder(df4, encoder_name, mode)
-    # BaseNEncoder
-    #encoder = ce.BaseNEncoder(
-        #cols=['Course Name', 'Course Skill', 'Specialization', 'Training Provider', 'Main Domain', 'Course Code'],
-        #return_df=True, base=5)
-    #df4 = encoder.fit_transform(df4)
-
-    #df4.to_csv('/Users/louise.hubert/PycharmProjects/training_predictions/data/encoded_data.csv', index=False)
-
-    #if mode == 'train':
-    #    joblib.dump(labelencoders, '/Users/louise.hubert/PycharmProjects/training_predictions/models' + 'feature_encoders.pkl')
-
 
 
 data1 = config.FRANCE_DATA

@@ -20,6 +20,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import f1_score
 import pandas as pd
+from plotnine import *
+
 
 
 
@@ -247,6 +249,9 @@ def compare_encoding(data):
                'Main Domain', 'Priority', 'Training Provider', 'Managed Type', 'Delivery Tool Platform',
                'Display Course Type', 'Specialization']
 
+    low_mod_col = ['Course Type', 'Priority', 'Managed Type', 'Display Course Type', 'Course Status', 'Country/Territory', 'Delivery Tool Plateform', 'Main Domain']
+    high_mod_col = ['Specialization', 'Training Provider', 'Course Skill', 'Course Name', 'Course Code']
+
 
     # On initialise une liste vide pour récupérer le nom du modèle et une autre pour le score
     models = []
@@ -269,15 +274,22 @@ def compare_encoding(data):
         X_test = test.drop(columns=['Participants'])
         y_test = test["Participants"]
 
-        name, score = keep_best('regression', 'r2', X_train, X_test, y_train, y_test)
+        name, score = keep_best('classification', 'f1', X_train, X_test, y_train, y_test)
         models.append(name)
         scores.append(score)
 
         #print(enc, name, score)
 
-    #df_result = pd.DataFrame(list(encoders,name,score), columns = ['Encoder','Model_Name','Score'])
+    df_encoders = pd.DataFrame(encoders, columns=['Encoder'])
+    df_models = pd.DataFrame(models, columns=['Name_Model'])
+    df_scores = pd.DataFrame(scores, columns=['Score'])
+    df_result = (df_encoders.join(df_models)).join(df_scores)
 
-    #print(df_result)
+
+    print(df_result)
+    df_result.to_csv('/Users/louise.hubert/PycharmProjects/training_predictions/models/classification_f1.csv', index=False)
+    #p = ggplot(df_result, aes('Encoder', 'Score')) + geom_histogram()
+    #print(p)
     return (name, score)
 
 NAME, SCORE = compare_encoding('/Users/louise.hubert/PycharmProjects/training_predictions/data/processed_data.csv')
