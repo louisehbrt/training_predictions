@@ -1,0 +1,7 @@
+Encoder,Name_Model,Score
+label,randomforestregressor,0.42996701055146547
+onehot,randomforestregressor,0.5200267707459812
+basen,randomforestregressor,0.3634401834968959
+similarity,randomforestregressor,0.1958233481884879
+minhash,randomforestregressor,0.1832830298464283
+gap,randomforestregressor,0.18405073127028504
