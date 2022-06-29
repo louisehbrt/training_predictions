@@ -1,0 +1,7 @@
+Encoder,Name_Model,Score
+label,randomforestclassifier,0.1603280854350424
+onehot,gradientboost,0.14380950839861753
+basen,randomforestclassifier,0.1609191321991502
+similarity,svc,0.1361492626974457
+minhash,bagging,0.11572393359394723
+gap,svc,0.1361492626974457

@@ -1,0 +1,7 @@
+Encoder,Name_Model,Score
+label,linearregression,82805.44495686737
+onehot,linearregression,1.2164056176558774e+18
+basen,linearregression,80609.24349449006
+similarity,linearregression,83543.612586307
+minhash,linearregression,81079.10764509723
+gap,linearregression,78902.37984771411
