@@ -117,7 +117,15 @@ def train_split_function(data):
         print(name, ' precision : ', model.score(X_test, y_test)*100, 'and f1-score : ', f1_score(y_test, y_predict, average='weighted'))
 
 
-def keep_best(method, eval, X_train, X_test, y_train, y_test):
+def keep_best(method, eval, df):
+    test = df[df['Year'] == 2021]
+    train = df[df['Year'] < 2021]
+
+    X_train = train.drop(columns=['Participants'])
+    y_train = train["Participants"]
+
+    X_test = test.drop(columns=['Participants'])
+    y_test = test["Participants"]
 
     if method == 'regression':
 
@@ -142,7 +150,7 @@ def keep_best(method, eval, X_train, X_test, y_train, y_test):
                 y_predict = model.predict(X_test)
                 r2_temp = r2_score(y_test, y_predict)
 
-                if r2_best < r2_temp :
+                if r2_best < r2_temp:
                     r2_best = r2_temp
                     name_best = name
 
@@ -236,66 +244,179 @@ def keep_best(method, eval, X_train, X_test, y_train, y_test):
             return name_best, f1_best
 
 
+def encode_high_mod_features(df):
+    encoders = ['basen', 'label', 'similarity', 'minhash', 'gap'] #'onehot'
+    high_mod_col = ['Training Provider', 'Specialization', 'Course Skill', 'Course Name', 'Course Code']
+
+    encoded_high_dfs = []
+
+    for index_enc_high, enc_high in enumerate(encoders):
+        df_enc_high = df.copy()
+        for index_col_high, col_high in enumerate(high_mod_col):
+
+            df_enc_high = feature_encoding.chose_feature_encoding(df_enc_high, col_high, enc_high)
+        encoded_high_dfs.append(df_enc_high)
+
+
+    return encoded_high_dfs
+
+
+def encode_low_mod_features(dfs):
+    encoders = ['basen', 'onehot', 'label', 'similarity', 'minhash', 'gap']
+    low_mod_col = ['Course Type', 'Priority', 'Managed Type', 'Display Course Type', 'Course Status',
+                   'Country/Territory', 'Delivery Tool Platform', 'Main Domain']
+
+    models = []
+    scores = []
+    low_encoders = []
+
+    for index_dfs, high_df in enumerate(dfs):
+        df_enc = high_df.copy()
+        #print('FIRST', df_enc)
+        for index_enc_low, enc_low in enumerate(encoders):
+            df_enc_low = df_enc.copy()
+            #print(enc_low)
+
+            for index_col_low, col_low in enumerate(low_mod_col):
+                #print(col_low)
+                df_enc_low = feature_encoding.chose_feature_encoding(df_enc_low, col_low, enc_low)
+                #print(df_enc_low)
+            #print('SECOND', df_enc_low)
+            name, score = keep_best('regression', 'r2', df_enc_low)
+            models.append(name)
+            scores.append(score)
+            low_encoders.append(enc_low)
+    return models, scores, low_encoders
+
 
 
 def compare_encoding(data):
+
     df = pd.read_csv(data)
 
     # Les encodeurs utilisés
-    encoders = ['label', 'onehot', 'basen', 'similarity', 'minhash', 'gap']
+    encoders = ['basen',  'label','similarity', 'minhash', 'gap']#'onehot',
 
-    # Les colonnes à encoder
+    """'# Les colonnes à encoder
     columns = ['Course Code', 'Course Name', 'Course Type', 'Course Status', 'Country/Territory', 'Course Skill',
                'Main Domain', 'Priority', 'Training Provider', 'Managed Type', 'Delivery Tool Platform',
                'Display Course Type', 'Specialization']
 
-    low_mod_col = ['Course Type', 'Priority', 'Managed Type', 'Display Course Type', 'Course Status', 'Country/Territory', 'Delivery Tool Plateform', 'Main Domain']
-    high_mod_col = ['Specialization', 'Training Provider', 'Course Skill', 'Course Name', 'Course Code']
+    #low_mod_col = ['Course Type', 'Priority', 'Managed Type', 'Display Course Type', 'Course Status',
+                   'Country/Territory', 'Delivery Tool Platform', 'Main Domain']
+    high_mod_col = ['Training Provider', 'Specialization', 'Course Skill', 'Course Name', 'Course Code']
+
+"""
+    DFS = encode_high_mod_features(df)
+    MODELS, SCORES, LOW_ENC = encode_low_mod_features(DFS)
+    HIGH_ENC = encoders * 6
+    print(MODELS)
+    print(SCORES)
+    print(LOW_ENC)
+    print(HIGH_ENC)
+
+    df_low_enc = pd.DataFrame(LOW_ENC, columns=['Low_Encoder'])
+    df_high_enc = pd.DataFrame(HIGH_ENC, columns=['High_Encoder'])
+    df_models = pd.DataFrame(MODELS, columns=['Name_Model'])
+    df_scores = pd.DataFrame(SCORES, columns=['Score'])
+
+    df_result = ((df_models.join(df_scores)).join(df_high_enc)).join(df_low_enc)
+
+    print(df_result)
+    #df_result.to_csv('/Users/louise.hubert/PycharmProjects/training_predictions/models/regression_mse_mod.csv', index=False)
+
+    return df_result
 
 
-    # On initialise une liste vide pour récupérer le nom du modèle et une autre pour le score
+
+    """"# On initialise une liste vide pour récupérer le nom du modèle et une autre pour le score
     models = []
     scores = []
 
-    for index_enc, enc in enumerate(encoders):
-        df_enc = df.copy()
-        for index_col, col in enumerate(columns):
-            df_enc = feature_encoding.chose_feature_encoding(df_enc, col, enc)
+    #for index_enc_low, enc_low in enumerate(encoders):
+        #df_enc_low = df.copy()
 
-        test = df_enc[df_enc['Year'] == 2021]
-        train = df_enc[df_enc['Year'] < 2021]
+        #for index_col_low, col_low in enumerate(low_mod_col):
+            #df_enc_low = feature_encoding.chose_feature_encoding(df_enc_low, col_low, enc_low)
+            #print(index_col_low,col_low)
+            #print(df_enc_low.columns)
 
-        test.to_csv('/Users/louise.hubert/PycharmProjects/training_predictions/data/test_data.csv', index=False)
-        train.to_csv('/Users/louise.hubert/PycharmProjects/training_predictions/data/train_data.csv', index=False)
+            #for index_enc_high, enc_high in enumerate(encoders):
+                #df_enc_high = df_enc_low.copy()
 
-        X_train = train.drop(columns=['Participants'])
-        y_train = train["Participants"]
+                #for index_col_high, col_high in enumerate(high_mod_col):
 
-        X_test = test.drop(columns=['Participants'])
-        y_test = test["Participants"]
-
-        name, score = keep_best('classification', 'f1', X_train, X_test, y_train, y_test)
-        models.append(name)
-        scores.append(score)
-
-        #print(enc, name, score)
-
-    df_encoders = pd.DataFrame(encoders, columns=['Encoder'])
-    df_models = pd.DataFrame(models, columns=['Name_Model'])
-    df_scores = pd.DataFrame(scores, columns=['Score'])
-    df_result = (df_encoders.join(df_models)).join(df_scores)
+                    #df_enc_high = feature_encoding.chose_feature_encoding(df_enc_high, col_high, enc_high)
+                    #print(col_high, enc_high)
+        #print(df_enc_high)
 
 
-    print(df_result)
-    df_result.to_csv('/Users/louise.hubert/PycharmProjects/training_predictions/models/classification_f1.csv', index=False)
+
+        #name, score = keep_best('regression', 'r2',df_enc_high)
+            # models.append(name)
+            # scores.append(score)
+            #print(df_enc_low)
+        #print(enc_low, enc_high, name, score)
+
+    #df_encoders = pd.DataFrame(encoders, columns=['Encoder'])
+    #df_models = pd.DataFrame(models, columns=['Name_Model'])
+    #df_scores = pd.DataFrame(scores, columns=['Score'])
+    #df_result = (df_encoders.join(df_models)).join(df_scores)
+
+
+    #print(df_result)
+    #df_result.to_csv('/Users/louise.hubert/PycharmProjects/training_predictions/models/classification_f1.csv', index=False)
     #p = ggplot(df_result, aes('Encoder', 'Score')) + geom_histogram()
     #print(p)
-    return (name, score)
+    #return (name, score)"""
 
-NAME, SCORE = compare_encoding('/Users/louise.hubert/PycharmProjects/training_predictions/data/processed_data.csv')
+#DF_RESULT = compare_encoding('/Users/louise.hubert/PycharmProjects/training_predictions/data/processed_data.csv')
+compare_encoding('/Users/louise.hubert/PycharmProjects/training_predictions/data/processed_data.csv')
 
 
 #train_split_function(DF)
 #train_with_2021_test(TRAIN,TEST)
 #train_with_2021_test('/Users/louise.hubert/PycharmProjects/training_predictions/data/train_data.csv','/Users/louise.hubert/PycharmProjects/training_predictions/data/test_data.csv')
 #train_split_function('/Users/louise.hubert/PycharmProjects/training_predictions/data/encoded_data.csv')
+
+
+
+encoders = ['basen', 'onehot', 'label', 'similarity', 'minhash', 'gap']
+low_mod_col = ['Course Type', 'Priority', 'Managed Type', 'Display Course Type', 'Course Status',
+                   'Country/Territory', 'Delivery Tool Platform', 'Main Domain']
+
+models = []
+scores = []
+low_encoders = []
+
+
+#print('FIRST', df_enc)
+for index_enc_low, enc_low in enumerate(encoders):
+    df_enc_low = data_high_enc.copy()
+    #print(enc_low)
+
+    for index_col_low, col_low in enumerate(low_mod_col):
+        #print(col_low)
+        df_enc_low = feature_encoding.chose_feature_encoding(df_enc_low, col_low, enc_low)
+        #print(df_enc_low)
+    #print('SECOND', df_enc_low)
+    name, score = keep_best('regression', 'r2', df_enc_low)
+    models.append(name)
+    scores.append(score)
+    low_encoders.append(enc_low)
+
+
+
+
+HIGH_ENC = ['onehot']*6
+
+
+df_low_enc = pd.DataFrame(low_encoders, columns=['Low_Encoder'])
+df_high_enc = pd.DataFrame(HIGH_ENC, columns=['High_Encoder'])
+df_models = pd.DataFrame(models, columns=['Name_Model'])
+df_scores = pd.DataFrame(scores, columns=['Score'])
+
+df_new_result = ((df_models.join(df_scores)).join(df_high_enc)).join(df_low_enc)
+
+print(df_new_result)
+    #df_result.to_csv('/Users/louise.hubert/PycharmProjects/training_predictions/models/regression_mse_mod.csv', index=False)
