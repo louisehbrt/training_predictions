@@ -381,7 +381,7 @@ compare_encoding('/Users/louise.hubert/PycharmProjects/training_predictions/data
 
 
 
-encoders = ['basen', 'onehot', 'label', 'similarity', 'minhash', 'gap']
+""" encoders = ['basen', 'onehot', 'label', 'similarity', 'minhash', 'gap']
 low_mod_col = ['Course Type', 'Priority', 'Managed Type', 'Display Course Type', 'Course Status',
                    'Country/Territory', 'Delivery Tool Platform', 'Main Domain']
 
@@ -419,4 +419,5 @@ df_scores = pd.DataFrame(scores, columns=['Score'])
 df_new_result = ((df_models.join(df_scores)).join(df_high_enc)).join(df_low_enc)
 
 print(df_new_result)
-    #df_result.to_csv('/Users/louise.hubert/PycharmProjects/training_predictions/models/regression_mse_mod.csv', index=False)
+#df_result.to_csv('/Users/louise.hubert/PycharmProjects/training_predictions/models/regression_mse_mod.csv', index=False) 
+"""
