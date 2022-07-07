@@ -282,7 +282,7 @@ def encode_low_mod_features(dfs):
                 df_enc_low = feature_encoding.chose_feature_encoding(df_enc_low, col_low, enc_low)
                 #print(df_enc_low)
             #print('SECOND', df_enc_low)
-            name, score = keep_best('regression', 'r2', df_enc_low)
+            name, score = keep_best('regression', 'mse', df_enc_low)
             models.append(name)
             scores.append(score)
             low_encoders.append(enc_low)
@@ -295,7 +295,7 @@ def compare_encoding(data):
     df = pd.read_csv(data)
 
     # Les encodeurs utilisés
-    encoders = ['basen',  'label','similarity', 'minhash', 'gap']#'onehot',
+    encoders = ['basen', 'label','similarity', 'minhash', 'gap']#'onehot',
 
     """'# Les colonnes à encoder
     columns = ['Course Code', 'Course Name', 'Course Type', 'Course Status', 'Country/Territory', 'Course Skill',
@@ -323,7 +323,7 @@ def compare_encoding(data):
     df_result = ((df_models.join(df_scores)).join(df_high_enc)).join(df_low_enc)
 
     print(df_result)
-    #df_result.to_csv('/Users/louise.hubert/PycharmProjects/training_predictions/models/regression_mse_mod.csv', index=False)
+    df_result.to_csv('/Users/louise.hubert/PycharmProjects/training_predictions/models/regression_mse_mod.csv', index=False)
 
     return df_result
 
@@ -381,7 +381,7 @@ compare_encoding('/Users/louise.hubert/PycharmProjects/training_predictions/data
 
 
 
-""" encoders = ['basen', 'onehot', 'label', 'similarity', 'minhash', 'gap']
+encoders = ['basen', 'onehot', 'label', 'similarity', 'minhash', 'gap']
 low_mod_col = ['Course Type', 'Priority', 'Managed Type', 'Display Course Type', 'Course Status',
                    'Country/Territory', 'Delivery Tool Platform', 'Main Domain']
 
@@ -400,7 +400,7 @@ for index_enc_low, enc_low in enumerate(encoders):
         df_enc_low = feature_encoding.chose_feature_encoding(df_enc_low, col_low, enc_low)
         #print(df_enc_low)
     #print('SECOND', df_enc_low)
-    name, score = keep_best('regression', 'r2', df_enc_low)
+    name, score = keep_best('regression', 'mse', df_enc_low)
     models.append(name)
     scores.append(score)
     low_encoders.append(enc_low)
@@ -420,4 +420,3 @@ df_new_result = ((df_models.join(df_scores)).join(df_high_enc)).join(df_low_enc)
 
 print(df_new_result)
 #df_result.to_csv('/Users/louise.hubert/PycharmProjects/training_predictions/models/regression_mse_mod.csv', index=False) 
-"""
