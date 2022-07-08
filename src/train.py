@@ -245,15 +245,15 @@ def keep_best(method, eval, df):
 
 
 def encode_high_mod_features(df):
-    encoders = ['basen', 'label', 'similarity', 'minhash', 'gap'] #'onehot'
+    encoders = ['basen', 'label', 'similarity', 'minhash'] #'onehot','gap'
     high_mod_col = ['Training Provider', 'Specialization', 'Course Skill', 'Course Name', 'Course Code']
 
     encoded_high_dfs = []
 
     for index_enc_high, enc_high in enumerate(encoders):
         df_enc_high = df.copy()
+        print('HIGH ENCODER', enc_high)
         for index_col_high, col_high in enumerate(high_mod_col):
-
             df_enc_high = feature_encoding.chose_feature_encoding(df_enc_high, col_high, enc_high)
         encoded_high_dfs.append(df_enc_high)
 
@@ -262,7 +262,7 @@ def encode_high_mod_features(df):
 
 
 def encode_low_mod_features(dfs):
-    encoders = ['basen', 'onehot', 'label', 'similarity', 'minhash', 'gap']
+    encoders = ['basen', 'onehot', 'label', 'minhash']#'similarity','gap'
     low_mod_col = ['Course Type', 'Priority', 'Managed Type', 'Display Course Type', 'Course Status',
                    'Country/Territory', 'Delivery Tool Platform', 'Main Domain']
 
@@ -275,14 +275,14 @@ def encode_low_mod_features(dfs):
         #print('FIRST', df_enc)
         for index_enc_low, enc_low in enumerate(encoders):
             df_enc_low = df_enc.copy()
-            #print(enc_low)
+            print('LOW ENCODER',enc_low)
 
             for index_col_low, col_low in enumerate(low_mod_col):
                 #print(col_low)
                 df_enc_low = feature_encoding.chose_feature_encoding(df_enc_low, col_low, enc_low)
                 #print(df_enc_low)
             #print('SECOND', df_enc_low)
-            name, score = keep_best('regression', 'mse', df_enc_low)
+            name, score = keep_best('classification', 'f1', df_enc_low)
             models.append(name)
             scores.append(score)
             low_encoders.append(enc_low)
@@ -295,18 +295,8 @@ def compare_encoding(data):
     df = pd.read_csv(data)
 
     # Les encodeurs utilisés
-    encoders = ['basen', 'label','similarity', 'minhash', 'gap']#'onehot',
+    encoders = ['basen', 'label','similarity', 'minhash']#'onehot','gap'
 
-    """'# Les colonnes à encoder
-    columns = ['Course Code', 'Course Name', 'Course Type', 'Course Status', 'Country/Territory', 'Course Skill',
-               'Main Domain', 'Priority', 'Training Provider', 'Managed Type', 'Delivery Tool Platform',
-               'Display Course Type', 'Specialization']
-
-    #low_mod_col = ['Course Type', 'Priority', 'Managed Type', 'Display Course Type', 'Course Status',
-                   'Country/Territory', 'Delivery Tool Platform', 'Main Domain']
-    high_mod_col = ['Training Provider', 'Specialization', 'Course Skill', 'Course Name', 'Course Code']
-
-"""
     DFS = encode_high_mod_features(df)
     MODELS, SCORES, LOW_ENC = encode_low_mod_features(DFS)
     HIGH_ENC = encoders * 6
@@ -323,7 +313,7 @@ def compare_encoding(data):
     df_result = ((df_models.join(df_scores)).join(df_high_enc)).join(df_low_enc)
 
     print(df_result)
-    df_result.to_csv('/Users/louise.hubert/PycharmProjects/training_predictions/models/regression_mse_mod.csv', index=False)
+    df_result.to_csv('/Users/louise.hubert/PycharmProjects/training_predictions/models/classification_f1_mod.csv', index=False)
 
     return df_result
 
@@ -381,7 +371,7 @@ compare_encoding('/Users/louise.hubert/PycharmProjects/training_predictions/data
 
 
 
-encoders = ['basen', 'onehot', 'label', 'similarity', 'minhash', 'gap']
+""" encoders = ['basen', 'onehot', 'label', 'similarity', 'minhash', 'gap']
 low_mod_col = ['Course Type', 'Priority', 'Managed Type', 'Display Course Type', 'Course Status',
                    'Country/Territory', 'Delivery Tool Platform', 'Main Domain']
 
@@ -420,3 +410,4 @@ df_new_result = ((df_models.join(df_scores)).join(df_high_enc)).join(df_low_enc)
 
 print(df_new_result)
 #df_result.to_csv('/Users/louise.hubert/PycharmProjects/training_predictions/models/regression_mse_mod.csv', index=False) 
+"""

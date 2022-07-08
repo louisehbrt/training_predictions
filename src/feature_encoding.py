@@ -14,7 +14,6 @@ def chose_feature_encoding(df, feature, name_encoder):
         df[feature] = encoder.fit_transform(df[feature])
 
     if name_encoder == 'onehot':
-        print(feature)
         df = pd.get_dummies(df, columns=[feature])
 
     elif name_encoder == 'basen':
