@@ -1,0 +1,17 @@
+Name_Model,Score,High_Encoder,Low_Encoder
+randomforestclassifier,18.51447296559257,basen,basen
+randomforestclassifier,17.80447842708902,label,onehot
+randomforestclassifier,17.96832332058984,similarity,label
+randomforestclassifier,100.0,minhash,minhash
+randomforestclassifier,17.476788640087385,basen,basen
+randomforestclassifier,15.401419989077006,label,onehot
+randomforestclassifier,18.077553249590387,similarity,label
+randomforestclassifier,17.149098853085746,minhash,minhash
+randomforestclassifier,13.271436373566356,basen,basen
+randomforestclassifier,11.3599126160568,label,onehot
+randomforestclassifier,13.653741125068269,similarity,label
+randomforestclassifier,13.81758601856909,minhash,minhash
+randomforestclassifier,14.58219552157291,basen,basen
+randomforestclassifier,12.889131622064445,label,onehot
+randomforestclassifier,15.45603495357728,similarity,label
+randomforestclassifier,13.653741125068269,minhash,minhash

@@ -1,0 +1,17 @@
+Name_Model,Score,High_Encoder,Low_Encoder
+decisiontree,10.868377935554342,basen,basen
+decisiontree,10.212998361551065,label,onehot
+decisiontree,8.90223921354451,similarity,label
+decisiontree,100.0,minhash,minhash
+decisiontree,10.431458219552157,basen,basen
+decisiontree,10.759148006553795,label,onehot
+decisiontree,10.10376843255052,similarity,label
+decisiontree,13.48989623156745,minhash,minhash
+decisiontree,6.990715456034953,basen,basen
+decisiontree,7.591480065537957,label,onehot
+decisiontree,7.755324959038777,similarity,label
+decisiontree,9.503003823047514,minhash,minhash
+decisiontree,5.8984161660294925,basen,basen
+decisiontree,6.881485527034408,label,onehot
+decisiontree,6.717640633533588,similarity,label
+decisiontree,8.35608956854178,minhash,minhash
