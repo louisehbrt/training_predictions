@@ -1,0 +1,17 @@
+Name_Model,Score,High_Encoder,Low_Encoder
+adaboost,18.78754778809394,basen,basen
+adaboost,18.67831785909339,label,onehot
+adaboost,18.13216821409066,similarity,label
+adaboost,100.0,minhash,minhash
+adaboost,18.67831785909339,basen,basen
+adaboost,15.94756963407974,label,onehot
+adaboost,17.039868924085198,similarity,label
+adaboost,17.039868924085198,minhash,minhash
+adaboost,12.23375204806117,basen,basen
+adaboost,10.48607318405243,label,onehot
+adaboost,13.107591480065539,similarity,label
+adaboost,12.725286728563626,minhash,minhash
+adaboost,14.145275805570726,basen,basen
+adaboost,10.704533042053523,label,onehot
+adaboost,14.309120699071546,similarity,label
+adaboost,13.708356089568541,minhash,minhash

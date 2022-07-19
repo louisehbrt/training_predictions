@@ -1,0 +1,17 @@
+Name_Model,Score,High_Encoder,Low_Encoder
+svc,18.569087930092845,basen,basen
+svc,18.569087930092845,label,onehot
+svc,18.569087930092845,similarity,label
+svc,95.84926269797924,minhash,minhash
+svc,20.480611687602405,basen,basen
+svc,20.42599672310213,label,onehot
+svc,20.42599672310213,similarity,label
+svc,18.569087930092845,minhash,minhash
+svc,18.569087930092845,basen,basen
+svc,18.569087930092845,label,onehot
+svc,18.569087930092845,similarity,label
+svc,18.569087930092845,minhash,minhash
+svc,20.75368651010377,basen,basen
+svc,20.75368651010377,label,onehot
+svc,20.75368651010377,similarity,label
+svc,18.569087930092845,minhash,minhash

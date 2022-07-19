@@ -299,11 +299,94 @@ def apply_decision_tree(df,eval):
 
         return name_best, f1_best
 
+def apply_svc(df,eval):
+    test = df[df['Year'] == 2021]
+    train = df[df['Year'] < 2021]
+
+    X_train = train.drop(columns=['Participants'])
+    y_train = train["Participants"]
+
+    X_test = test.drop(columns=['Participants'])
+    y_test = test["Participants"]
+
+    if eval == 'precision':
+        model = SVC(random_state=7)
+        model.fit(X_train, y_train)
+        precision_best = model.score(X_test, y_test) * 100
+        name_best = 'svc'
+
+        return name_best, precision_best
+
+    if eval == 'f1':
+        model = SVC(random_state=7)
+        model.fit(X_train, y_train)
+        y_predict = model.predict(X_test)
+        f1_best = f1_score(y_test, y_predict, average='weighted')
+        name_best = 'svc'
+
+        return name_best, f1_best
+
+def apply_adaboost(df,eval):
+    test = df[df['Year'] == 2021]
+    train = df[df['Year'] < 2021]
+
+    X_train = train.drop(columns=['Participants'])
+    y_train = train["Participants"]
+
+    X_test = test.drop(columns=['Participants'])
+    y_test = test["Participants"]
+
+    if eval == 'precision':
+        model = AdaBoostClassifier(base_estimator=RandomForestClassifier(), random_state=7)
+        model.fit(X_train, y_train)
+        precision_best = model.score(X_test, y_test) * 100
+        name_best = 'adaboost'
+
+        return name_best, precision_best
+
+    if eval == 'f1':
+        model = AdaBoostClassifier(base_estimator=RandomForestClassifier(), random_state=7)
+        model.fit(X_train, y_train)
+        y_predict = model.predict(X_test)
+        f1_best = f1_score(y_test, y_predict, average='weighted')
+        name_best = 'adaboost'
+
+        return name_best, f1_best
+
+def apply_gradientboost(df,eval):
+    test = df[df['Year'] == 2021]
+    train = df[df['Year'] < 2021]
+
+    X_train = train.drop(columns=['Participants'])
+    y_train = train["Participants"]
+
+    X_test = test.drop(columns=['Participants'])
+    y_test = test["Participants"]
+
+    if eval == 'precision':
+        model = GradientBoostingClassifier(random_state=7),
+        model.fit(X_train, y_train)
+        precision_best = model.score(X_test, y_test) * 100
+        name_best = 'gradientboost'
+
+        return name_best, precision_best
+
+    if eval == 'f1':
+        model = GradientBoostingClassifier(random_state=7)
+        model.fit(X_train, y_train)
+        y_predict = model.predict(X_test)
+        f1_best = f1_score(y_test, y_predict, average='weighted')
+        name_best = 'gradientboost'
+
+        return name_best, f1_best
+
+
 
 
 def encode_high_mod_features(df):
     encoders = ['basen', 'label', 'similarity', 'minhash'] #'onehot','gap'
-    high_mod_col = ['Training Provider', 'Specialization', 'Course Skill', 'Course Name', 'Course Code']
+    #high_mod_col = ['Training Provider', 'Specialization', 'Course Skill', 'Course Name', 'Course Code']
+    high_mod_col = ['Training Provider', 'Course Name']
 
     encoded_high_dfs = []
 
@@ -339,8 +422,8 @@ def encode_low_mod_features(dfs):
                 df_enc_low = feature_encoding.chose_feature_encoding(df_enc_low, col_low, enc_low)
                 #print(df_enc_low)
             #print('SECOND', df_enc_low)
-            #name, score = keep_best('classification', 'f1', df_enc_low)
-            name, score = apply_decision_tree(df_enc_low,'f1')
+            name, score = keep_best('regression', 'r2', df_enc_low)
+            #name, score = apply_gradientboost(df_enc_low,'precision')
             models.append(name)
             scores.append(score)
             low_encoders.append(enc_low)
@@ -371,7 +454,7 @@ def compare_encoding(data):
     df_result = ((df_models.join(df_scores)).join(df_high_enc)).join(df_low_enc)
 
     print(df_result)
-    df_result.to_csv('/Users/louise.hubert/PycharmProjects/training_predictions/models/classification_decision_tree_f1_mod.csv', index=False)
+    df_result.to_csv('/Users/louise.hubert/PycharmProjects/training_predictions/models/regression_little_r2_mod.csv', index=False)
 
     return df_result
 
@@ -419,7 +502,7 @@ def compare_encoding(data):
     #return (name, score)"""
 
 #DF_RESULT = compare_encoding('/Users/louise.hubert/PycharmProjects/training_predictions/data/processed_data.csv')
-compare_encoding('/Users/louise.hubert/PycharmProjects/training_predictions/data/processed_data.csv')
+compare_encoding('/Users/louise.hubert/PycharmProjects/training_predictions/data/little_processed_data.csv')
 
 """ encoders = ['basen', 'onehot', 'label', 'similarity', 'minhash', 'gap']
 low_mod_col = ['Course Type', 'Priority', 'Managed Type', 'Display Course Type', 'Course Status',

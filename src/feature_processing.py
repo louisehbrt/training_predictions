@@ -31,6 +31,9 @@ def feature_process(data1, data2, main_domains, mode, encoder_name):
     df1 = df1.drop(columns=['Session Code', 'Session Start Date', 'Session End Date', 'Course Skill Relevancy',
                             'Service/Group Level 1', 'Total Hours'])
 
+    # en essayant sans les frais et les variables redondantes :
+    df1 = df1.drop(columns=['Course Skill', 'Specialization', 'Estimated Housing', 'Estimated Transportation', 'Estimated Tuition', 'Estimated Other'])
+
     # Retirer les formations 'Online', 'Video' et 'Mobile'
     df1.drop(df1.loc[df1['Display Course Type'] == 'Mobile'].index, inplace=True)
     df1.drop(df1.loc[df1['Display Course Type'] == 'Online'].index, inplace=True)
@@ -62,7 +65,9 @@ def feature_process(data1, data2, main_domains, mode, encoder_name):
     # df_2021 = df4[df4['Year'] == 2021]
     # course_code_2021 = df_2021['Course Code']
 
-    df4.to_csv('/Users/louise.hubert/PycharmProjects/training_predictions/data/processed_data.csv', index=False)
+    df4 = df4.drop(columns = ['Course Code'])
+
+    df4.to_csv('/Users/louise.hubert/PycharmProjects/training_predictions/data/little_processed_data.csv', index=False)
 
     part = df4[['Year']].join(df4[['Participants']])
     part = part.join(df4[['Main Domain']])

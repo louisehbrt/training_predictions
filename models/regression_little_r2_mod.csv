@@ -1,0 +1,17 @@
+Name_Model,Score,High_Encoder,Low_Encoder
+randomforestregressor,0.2864220550674186,basen,basen
+randomforestregressor,0.2512067407918901,label,onehot
+randomforestregressor,0.22149814587934935,similarity,label
+randomforestregressor,1.0,minhash,minhash
+randomforestregressor,0.46365966771188216,basen,basen
+randomforestregressor,0.44552787687312667,label,onehot
+randomforestregressor,0.46496096404175047,similarity,label
+randomforestregressor,0.47992059010365873,minhash,minhash
+randomforestregressor,0.3220368907526626,basen,basen
+randomforestregressor,0.3539075641078234,label,onehot
+randomforestregressor,0.3215256810384587,similarity,label
+randomforestregressor,0.48414119658096044,minhash,minhash
+lassoregression,0.012434690126642334,basen,basen
+randomforestregressor,0.01790948458236108,label,onehot
+lassoregression,0.008260519093116536,similarity,label
+randomforestregressor,0.27503778508162224,minhash,minhash
