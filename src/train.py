@@ -504,7 +504,7 @@ def compare_encoding(data):
 #DF_RESULT = compare_encoding('/Users/louise.hubert/PycharmProjects/training_predictions/data/processed_data.csv')
 compare_encoding('/Users/louise.hubert/PycharmProjects/training_predictions/data/little_processed_data.csv')
 
-""" encoders = ['basen', 'onehot', 'label', 'similarity', 'minhash', 'gap']
+encoders = ['basen', 'onehot', 'label', 'similarity', 'minhash', 'gap']
 low_mod_col = ['Course Type', 'Priority', 'Managed Type', 'Display Course Type', 'Course Status',
                    'Country/Territory', 'Delivery Tool Platform', 'Main Domain']
 
@@ -513,17 +513,16 @@ scores = []
 low_encoders = []
 
 
-#print('FIRST', df_enc)
 for index_enc_low, enc_low in enumerate(encoders):
-    df_enc_low = data_high_enc.copy()
-    #print(enc_low)
+    df_enc_low = data_high_enc_.copy()
+    print(enc_low)
 
     for index_col_low, col_low in enumerate(low_mod_col):
         #print(col_low)
         df_enc_low = feature_encoding.chose_feature_encoding(df_enc_low, col_low, enc_low)
         #print(df_enc_low)
-    #print('SECOND', df_enc_low)
-    name, score = keep_best('regression', 'mse', df_enc_low)
+    print('SECOND', df_enc_low)
+    name, score = keep_best('regression', 'r2', df_enc_low)
     models.append(name)
     scores.append(score)
     low_encoders.append(enc_low)
@@ -541,6 +540,9 @@ df_scores = pd.DataFrame(scores, columns=['Score'])
 
 df_new_result = ((df_models.join(df_scores)).join(df_high_enc)).join(df_low_enc)
 
+data_all = pd.read_csv('/Users/louise.hubert/PycharmProjects/training_predictions/models/regression_little_r2_mod.csv')
+
+df_new_result = pd.merge(df_new_result,data_all)
+
 print(df_new_result)
-#df_result.to_csv('/Users/louise.hubert/PycharmProjects/training_predictions/models/regression_mse_mod.csv', index=False) 
-"""
+#df_result.to_csv('/Users/louise.hubert/PycharmProjects/training_predictions/models/regression_mse_mod.csv', index=False)
