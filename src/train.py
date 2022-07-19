@@ -26,13 +26,15 @@ from plotnine import *
 
 
 
-def train_with_2021_test(data_train,data_test):
+def train_with_2021_test(data):
+    df = pd.read_csv(data)
 
-    df_train = pd.read_csv(data_train)
+    df_test = df[df['Year'] == 2021]
+    df_train = df[df['Year'] < 2021]
+
     X_train = df_train.drop(columns=['Participants'])
     y_train = df_train["Participants"]
 
-    df_test = pd.read_csv(data_test)
     X_test = df_test.drop(columns=['Participants'])
     y_test = df_test["Participants"]
 
@@ -384,9 +386,9 @@ def apply_gradientboost(df,eval):
 
 
 def encode_high_mod_features(df):
-    encoders = ['basen', 'label', 'similarity', 'minhash'] #'onehot','gap'
-    #high_mod_col = ['Training Provider', 'Specialization', 'Course Skill', 'Course Name', 'Course Code']
-    high_mod_col = ['Training Provider', 'Course Name']
+    encoders = ['basen', 'label', 'minhash'] #'onehot','gap', 'similarity'
+    high_mod_col = ['Training Provider', 'Specialization', 'Course Skill', 'Course Name', 'Course Code']
+    #high_mod_col = ['Training Provider', 'Course Name']
 
     encoded_high_dfs = []
 
@@ -397,12 +399,11 @@ def encode_high_mod_features(df):
             df_enc_high = feature_encoding.chose_feature_encoding(df_enc_high, col_high, enc_high)
         encoded_high_dfs.append(df_enc_high)
 
-
     return encoded_high_dfs
 
 
 def encode_low_mod_features(dfs):
-    encoders = ['basen', 'onehot', 'label', 'minhash']#'similarity','gap'
+    encoders = ['basen', 'label', 'onehot', 'minhash']#'similarity','gap'
     low_mod_col = ['Course Type', 'Priority', 'Managed Type', 'Display Course Type', 'Course Status',
                    'Country/Territory', 'Delivery Tool Platform', 'Main Domain']
 
@@ -422,8 +423,9 @@ def encode_low_mod_features(dfs):
                 df_enc_low = feature_encoding.chose_feature_encoding(df_enc_low, col_low, enc_low)
                 #print(df_enc_low)
             #print('SECOND', df_enc_low)
-            name, score = keep_best('regression', 'r2', df_enc_low)
-            #name, score = apply_gradientboost(df_enc_low,'precision')
+            #print(df_enc_low)
+            #name, score = keep_best('regression', 'r2', df_enc_low)
+            name, score = apply_random_forest(df_enc_low,'precision')
             models.append(name)
             scores.append(score)
             low_encoders.append(enc_low)
@@ -436,11 +438,11 @@ def compare_encoding(data):
     df = pd.read_csv(data)
 
     # Les encodeurs utilisés
-    encoders = ['basen', 'label','similarity', 'minhash']#'onehot','gap'
+    high_encoders = ['basen', 'label', 'minhash']#'onehot','gap', ,'similarity',
 
     DFS = encode_high_mod_features(df)
     MODELS, SCORES, LOW_ENC = encode_low_mod_features(DFS)
-    HIGH_ENC = encoders * 6
+    HIGH_ENC = high_encoders * 4
     print(MODELS)
     print(SCORES)
     print(LOW_ENC)
@@ -454,7 +456,7 @@ def compare_encoding(data):
     df_result = ((df_models.join(df_scores)).join(df_high_enc)).join(df_low_enc)
 
     print(df_result)
-    df_result.to_csv('/Users/louise.hubert/PycharmProjects/training_predictions/models/regression_little_r2_mod.csv', index=False)
+    #df_result.to_csv('/Users/louise.hubert/PycharmProjects/training_predictions/models/classification_random_forest_precision_mod.csv', index=False)
 
     return df_result
 
@@ -502,9 +504,11 @@ def compare_encoding(data):
     #return (name, score)"""
 
 #DF_RESULT = compare_encoding('/Users/louise.hubert/PycharmProjects/training_predictions/data/processed_data.csv')
-compare_encoding('/Users/louise.hubert/PycharmProjects/training_predictions/data/little_processed_data.csv')
+#train_with_2021_test('/Users/louise.hubert/PycharmProjects/training_predictions/data/encoded_data.csv')
+#train_split_function('/Users/louise.hubert/PycharmProjects/training_predictions/data/encoded_data.csv')
+compare_encoding('/Users/louise.hubert/PycharmProjects/training_predictions/data/processed_data_classes.csv')
 
-data = pd.read_csv('/Users/louise.hubert/PycharmProjects/training_predictions/data/little_processed_data.csv')
+"""data = pd.read_csv('/Users/louise.hubert/PycharmProjects/training_predictions/data/little_processed_data.csv')
 data_low = data.drop(columns = ['Training Provider', 'Course Name'])
 data_high = data.drop(columns =['Course Type', 'Priority', 'Managed Type', 'Display Course Type', 'Course Status',
                    'Country/Territory', 'Delivery Tool Platform', 'Main Domain', 'Year', 'Participants', 'Course Hours'])
@@ -554,4 +558,4 @@ data_all = pd.read_csv('/Users/louise.hubert/PycharmProjects/training_prediction
 df_new_result = df_new_result.append(data_all)
 
 print(df_new_result)
-df_new_result.to_csv('/Users/louise.hubert/PycharmProjects/training_predictions/models/regression_little_r2_mod.csv', index=False)
+df_new_result.to_csv('/Users/louise.hubert/PycharmProjects/training_predictions/models/regression_little_r2_mod.csv', index=False)"""
