@@ -251,11 +251,17 @@ def apply_random_forest(df,eval):
     test = df[df['Year'] == 2021]
     train = df[df['Year'] < 2021]
 
-    X_train = train.drop(columns=['Participants'])
+    """X_train = train.drop(columns=['Participants'])
     y_train = train["Participants"]
 
     X_test = test.drop(columns=['Participants'])
-    y_test = test["Participants"]
+    y_test = test["Participants"]"""
+
+    X_train = train.drop(columns=['Classes'])
+    y_train = train["Classes"]
+
+    X_test = test.drop(columns=['Classes'])
+    y_test = test["Classes"]
 
     if eval == 'precision':
         model = RandomForestClassifier(random_state=7)
@@ -456,7 +462,7 @@ def compare_encoding(data):
     df_result = ((df_models.join(df_scores)).join(df_high_enc)).join(df_low_enc)
 
     print(df_result)
-    #df_result.to_csv('/Users/louise.hubert/PycharmProjects/training_predictions/models/classification_random_forest_precision_mod.csv', index=False)
+    df_result.to_csv('/Users/louise.hubert/PycharmProjects/training_predictions/models/classification_random_forest_precision_mod_classes.csv', index=False)
 
     return df_result
 

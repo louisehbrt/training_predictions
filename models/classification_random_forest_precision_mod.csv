@@ -1,0 +1,13 @@
+Name_Model,Score,High_Encoder,Low_Encoder
+randomforestclassifier,18.51447296559257,basen,basen
+randomforestclassifier,17.96832332058984,label,label
+randomforestclassifier,17.80447842708902,minhash,onehot
+randomforestclassifier,100.0,basen,minhash
+randomforestclassifier,17.476788640087385,label,basen
+randomforestclassifier,18.077553249590387,minhash,label
+randomforestclassifier,15.401419989077006,basen,onehot
+randomforestclassifier,17.149098853085746,label,minhash
+randomforestclassifier,14.58219552157291,minhash,basen
+randomforestclassifier,15.45603495357728,basen,label
+randomforestclassifier,12.889131622064445,label,onehot
+randomforestclassifier,13.653741125068269,minhash,minhash
