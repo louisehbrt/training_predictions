@@ -504,6 +504,15 @@ def compare_encoding(data):
 #DF_RESULT = compare_encoding('/Users/louise.hubert/PycharmProjects/training_predictions/data/processed_data.csv')
 compare_encoding('/Users/louise.hubert/PycharmProjects/training_predictions/data/little_processed_data.csv')
 
+data = pd.read_csv('/Users/louise.hubert/PycharmProjects/training_predictions/data/little_processed_data.csv')
+data_low = data.drop(columns = ['Training Provider', 'Course Name'])
+data_high = data.drop(columns =['Course Type', 'Priority', 'Managed Type', 'Display Course Type', 'Course Status',
+                   'Country/Territory', 'Delivery Tool Platform', 'Main Domain', 'Year', 'Participants', 'Course Hours'])
+
+data_high_enc = pd.get_dummies(data_high)
+
+data_high_enc = data_high_enc.join(data_low)
+
 encoders = ['basen', 'onehot', 'label', 'similarity', 'minhash', 'gap']
 low_mod_col = ['Course Type', 'Priority', 'Managed Type', 'Display Course Type', 'Course Status',
                    'Country/Territory', 'Delivery Tool Platform', 'Main Domain']
@@ -514,7 +523,7 @@ low_encoders = []
 
 
 for index_enc_low, enc_low in enumerate(encoders):
-    df_enc_low = data_high_enc_.copy()
+    df_enc_low = data_high_enc.copy()
     print(enc_low)
 
     for index_col_low, col_low in enumerate(low_mod_col):
@@ -542,7 +551,7 @@ df_new_result = ((df_models.join(df_scores)).join(df_high_enc)).join(df_low_enc)
 
 data_all = pd.read_csv('/Users/louise.hubert/PycharmProjects/training_predictions/models/regression_little_r2_mod.csv')
 
-df_new_result = pd.merge(df_new_result,data_all)
+df_new_result = df_new_result.append(data_all)
 
 print(df_new_result)
-#df_result.to_csv('/Users/louise.hubert/PycharmProjects/training_predictions/models/regression_mse_mod.csv', index=False)
+df_new_result.to_csv('/Users/louise.hubert/PycharmProjects/training_predictions/models/regression_little_r2_mod.csv', index=False)
