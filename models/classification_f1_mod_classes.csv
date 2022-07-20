@@ -1,0 +1,13 @@
+,Name_Model,Score,High_Encoder,Low_Encoder
+0,adaboost,0.4042574480145834,basen,basen
+1,randomforestclassifier,0.4073063759740037,label,label
+2,adaboost,0.3915097498396681,minhash,onehot
+3,randomforestclassifier,0.4021084859590886,basen,minhash
+4,adaboost,0.3952458784808542,label,basen
+5,adaboost,0.3987724740626708,minhash,label
+6,randomforestclassifier,0.3700953764171006,basen,onehot
+7,randomforestclassifier,0.3919687719185203,label,minhash
+8,adaboost,0.3493724093654254,minhash,basen
+9,adaboost,0.358365755903468,basen,label
+10,randomforestclassifier,0.3244015294327376,label,onehot
+11,adaboost,0.3613208471033569,minhash,minhash

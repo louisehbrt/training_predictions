@@ -1,0 +1,13 @@
+Name_Model,Score,High_Encoder,Low_Encoder
+adaboost,0.4042574480145834,basen,basen
+adaboost,0.4060307177488122,label,label
+adaboost,0.3915097498396681,minhash,onehot
+adaboost,0.3997150895434518,basen,minhash
+adaboost,0.39524587848085424,label,basen
+adaboost,0.3987724740626708,minhash,label
+adaboost,0.36501605397394193,basen,onehot
+adaboost,0.3803230184794553,label,minhash
+adaboost,0.3493724093654254,minhash,basen
+adaboost,0.358365755903468,basen,label
+adaboost,0.31334829632842115,label,onehot
+adaboost,0.3613208471033569,minhash,minhash

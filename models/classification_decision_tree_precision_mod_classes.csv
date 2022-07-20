@@ -1,0 +1,13 @@
+Name_Model,Score,High_Encoder,Low_Encoder
+decisiontree,21.46368104860732,basen,basen
+decisiontree,25.5598033861278,label,label
+decisiontree,21.46368104860732,minhash,onehot
+decisiontree,23.48443473511742,basen,minhash
+decisiontree,28.23593664664118,label,basen
+decisiontree,21.13599126160568,minhash,label
+decisiontree,21.62752594210814,basen,onehot
+decisiontree,21.572910977607865,label,minhash
+decisiontree,21.955215729109774,minhash,basen
+decisiontree,19.825232113599125,basen,label
+decisiontree,23.26597487711633,label,onehot
+decisiontree,22.829055161114145,minhash,minhash

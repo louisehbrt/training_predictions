@@ -1,0 +1,13 @@
+Name_Model,Score,High_Encoder,Low_Encoder
+svc,0.27597222022248097,basen,basen
+svc,0.27597222022248097,label,label
+svc,0.2755967181301356,minhash,onehot
+svc,0.10053792733357207,basen,minhash
+svc,0.2943286513645752,label,basen
+svc,0.2950747908018072,minhash,label
+svc,0.2936479953217834,basen,onehot
+svc,0.15979539028888035,label,minhash
+svc,0.09758167646960851,minhash,basen
+svc,0.09841310337011844,basen,label
+svc,0.0823836331659077,label,onehot
+svc,0.17186399947577172,minhash,minhash
