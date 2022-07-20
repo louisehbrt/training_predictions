@@ -251,17 +251,17 @@ def apply_random_forest(df,eval):
     test = df[df['Year'] == 2021]
     train = df[df['Year'] < 2021]
 
-    """X_train = train.drop(columns=['Participants'])
+    X_train = train.drop(columns=['Participants'])
     y_train = train["Participants"]
 
     X_test = test.drop(columns=['Participants'])
-    y_test = test["Participants"]"""
+    y_test = test["Participants"]
 
-    X_train = train.drop(columns=['Classes'])
+    """X_train = train.drop(columns=['Classes'])
     y_train = train["Classes"]
 
     X_test = test.drop(columns=['Classes'])
-    y_test = test["Classes"]
+    y_test = test["Classes"]"""
 
     if eval == 'precision':
         model = RandomForestClassifier(random_state=7)
@@ -290,6 +290,12 @@ def apply_decision_tree(df,eval):
     X_test = test.drop(columns=['Participants'])
     y_test = test["Participants"]
 
+    """X_train = train.drop(columns=['Classes'])
+    y_train = train["Classes"]
+
+    X_test = test.drop(columns=['Classes'])
+    y_test = test["Classes"]"""
+
     if eval == 'precision':
         model = DecisionTreeClassifier(random_state=7)
         model.fit(X_train, y_train)
@@ -316,6 +322,12 @@ def apply_svc(df,eval):
 
     X_test = test.drop(columns=['Participants'])
     y_test = test["Participants"]
+
+    """X_train = train.drop(columns=['Classes'])
+    y_train = train["Classes"]
+
+    X_test = test.drop(columns=['Classes'])
+    y_test = test["Classes"]"""
 
     if eval == 'precision':
         model = SVC(random_state=7)
@@ -344,6 +356,12 @@ def apply_adaboost(df,eval):
     X_test = test.drop(columns=['Participants'])
     y_test = test["Participants"]
 
+    """X_train = train.drop(columns=['Classes'])
+    y_train = train["Classes"]
+
+    X_test = test.drop(columns=['Classes'])
+    y_test = test["Classes"]"""
+
     if eval == 'precision':
         model = AdaBoostClassifier(base_estimator=RandomForestClassifier(), random_state=7)
         model.fit(X_train, y_train)
@@ -370,6 +388,12 @@ def apply_gradientboost(df,eval):
 
     X_test = test.drop(columns=['Participants'])
     y_test = test["Participants"]
+
+    """X_train = train.drop(columns=['Classes'])
+    y_train = train["Classes"]"""
+
+    X_test = test.drop(columns=['Classes'])
+    y_test = test["Classes"]
 
     if eval == 'precision':
         model = GradientBoostingClassifier(random_state=7),
@@ -431,7 +455,7 @@ def encode_low_mod_features(dfs):
             #print('SECOND', df_enc_low)
             #print(df_enc_low)
             #name, score = keep_best('regression', 'r2', df_enc_low)
-            name, score = apply_random_forest(df_enc_low,'precision')
+            name, score = apply_decision_tree(df_enc_low,'precision')
             models.append(name)
             scores.append(score)
             low_encoders.append(enc_low)
@@ -462,7 +486,7 @@ def compare_encoding(data):
     df_result = ((df_models.join(df_scores)).join(df_high_enc)).join(df_low_enc)
 
     print(df_result)
-    df_result.to_csv('/Users/louise.hubert/PycharmProjects/training_predictions/models/classification_random_forest_precision_mod_classes.csv', index=False)
+    df_result.to_csv('/Users/louise.hubert/PycharmProjects/training_predictions/models/classification_adaboost_precision_mod.csv', index=False)
 
     return df_result
 
@@ -512,7 +536,7 @@ def compare_encoding(data):
 #DF_RESULT = compare_encoding('/Users/louise.hubert/PycharmProjects/training_predictions/data/processed_data.csv')
 #train_with_2021_test('/Users/louise.hubert/PycharmProjects/training_predictions/data/encoded_data.csv')
 #train_split_function('/Users/louise.hubert/PycharmProjects/training_predictions/data/encoded_data.csv')
-compare_encoding('/Users/louise.hubert/PycharmProjects/training_predictions/data/processed_data_classes.csv')
+compare_encoding('/Users/louise.hubert/PycharmProjects/training_predictions/data/processed_data.csv')
 
 """data = pd.read_csv('/Users/louise.hubert/PycharmProjects/training_predictions/data/little_processed_data.csv')
 data_low = data.drop(columns = ['Training Provider', 'Course Name'])
